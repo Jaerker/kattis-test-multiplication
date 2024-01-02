@@ -1,77 +1,6 @@
 
 /*
 
-    Vad ska göras: 
-    - Mata in 2 tal som ska multipliceras
-    - Talen ska visualiseras som nedan: 
-
-    15 streck
-    +---------------+
-    |   3   4   5   |
-    | +---+---+---+ |
-    | |1 /|2 /|2 /| |
-    | | / | / | / |5|
-    |1|/ 5|/ 0|/ 5| |
-    | +---+---+---+ |
-    |/|1 /|2 /|3 /| |
-    | | / | / | / |6|
-    |9|/ 8|/ 4|/ 0| |
-    | +---+---+---+ |
-    |/ 3 / 2 / 0    |
-    +---------------+
-
-    Hur varje rad ser ut är följande: 
-
-    - INLEDANDE OCH AVSLUTANDE: 
-        "+- ~ -+" där ~ är mängden tal i första numret = 3 + firstNum.toString().length + (firstNum.toString().length *3) 
-    - WORD ONE RADEN:
-        "|   {n}" och repetera "   {n}" tills sista siffran, sen avsluta med "   |"
-    - SUB GRID START, SUB GRID GAP, SUB GRID END:
-        "| " och sen "+---" per siffra i firstNum, avsluta med "+ |"
-    - SUB GRID MITT-1:
-        "| |" följt av tiotals numret i firstNum[0] * secondNum[0], sen " /|" och sen loopa genom alla talen i firstNum på secondNum[0] 
-    - SUB GRID MITT-2:
-        "| |" följt av " / |" lika många gånger som firstNum.Length, avslutat med högsta talet i secondNum. 
-    
-
-//parseInt(num.toString()[INDEX])
-
-
-    PSEUDOKOD:
-    SET VARIABLES: 
-        hLine       =   "-"
-        vLine       =   "|"
-        dash        =   "/"
-        plus        =   "+"
-        space       =   " "
-    FUNCTION BigMultiplication(firstNum, secondNum):
-        SET ARRAY tableMap = []
-        SET INT endCalculation = firstNum * secondNum;
-        SET ARRAY storedValues = []
-        FOR EACH secondSingleNum IN secondNum with INDEX1:
-            storedValues[INDEX1] = []
-            FOR EACH firstSingleNum IN firstNum with INDEX2:
-                storedValues [INDEX1][INDEX2] = secondSingleNum * firstSingleNum; //prepares all numbers we will need to put inside the table
-
-        tableMap.PUSH = '+' + '-'.repeat(3 + firstNum.toString().length + (firstNum.toString().length *3)) + '+';
-        SET VARIABLE currentLine = ' '.repeat(3);
-        FOR EACH num IN firstNum:
-            currentLine += num + ' '.repeat(3);
-        tableMap.PUSH = '|' + currentLine + vLine;
-        
-        FOR EACH num IN secondNum WITH INDEX:
-            currentLine = '| ' + ('+' + '-'.repeat(3)).repeat(firstNum.toString().length) + '+ |';
-            tableMap.PUSH = currentLine;
-
-            FOR EACH subNum IN storedValues[INDEX]
-            
-            
-
-
-
-        
-    END FUNCTION
-
 
 
 */
@@ -79,35 +8,38 @@
 
 function BigMultiplication(firstNum: number, secondNum: number){
 
-    let endCalcLengthCheck = -1;
+    if (firstNum === 0 && secondNum === 0) return "";
     let tableMap = [];
     let endCalculation = firstNum * secondNum;
     let storedValues = [];
     
+    //Stores the seperate values of the grid numbers in storedValues
     for(let i=0; i < secondNum.toString().length; i++){
         storedValues[i] = [];
         for(let j=0; j < firstNum.toString().length; j++){
             storedValues[i][j] = (parseInt(firstNum.toString()[j]) * parseInt(secondNum.toString()[i])).toString().length != 2 ? '0' + (parseInt(firstNum.toString()[j]) * parseInt(secondNum.toString()[i])).toString() : (parseInt(firstNum.toString()[j]) * parseInt(secondNum.toString()[i])).toString();
         }   
     }
-    tableMap.push('+' + '-'.repeat(3 + firstNum.toString().length + (firstNum.toString().length *3)) + '+'); // +---~---+
-    let currentLine = '';
+
+    tableMap.push('+' + '-'.repeat(3 + firstNum.toString().length + (firstNum.toString().length *3)) + '+');// First print line: +---~---+
+    let currentLine = '';                                                                                   //currentLine stores multiple values that are going to take place in one array item
     for(let i=0; i < firstNum.toString().length; i++){
         currentLine += `${firstNum.toString()[i]}   `;
-    }
-    tableMap.push('|   ' + currentLine + '|'); //  |   {} ~   |
+    }                                                                                                       // prepares the first number that shows at the top as shown at next line
+    tableMap.push('|   ' + currentLine + '|');                                                              //  |   {number}   {number} ~   |
 
-    for(let i=0;i < secondNum.toString().length; i++){
-        tableMap.push('| +' + '---+'.repeat(firstNum.toString().length) + ' |');
+    for(let i=0;i < secondNum.toString().length; i++){                                                      //Goes through every number in secondNum to fix subgrid
+        tableMap.push('| +' + '---+'.repeat(firstNum.toString().length) + ' |');                            //Top section = | +---+~+ |
         
-        i != 0 ? currentLine = '|/|' : currentLine = '| |';
+        i > (firstNum.toString().length + secondNum.toString().length) - endCalculation.toString().length ? currentLine = '|/|' : currentLine = '| |';
         for(let j=0; j < firstNum.toString().length; j++){
-            currentLine +=`${storedValues[i][j].toString()[0]} /|`;
+            currentLine +=`${storedValues[i][j].toString()[0]} /|`;                                         
         }
         tableMap.push(currentLine + ' |');
         tableMap.push('| |' + ' / |'.repeat(firstNum.toString().length) + secondNum.toString()[i] + '|');
-        endCalcLengthCheck++;
-        currentLine = `|${endCalculation.toString()[endCalcLengthCheck]}`;
+        
+        i + endCalculation.toString().length - (firstNum.toString().length + secondNum.toString().length) >= 0  ? currentLine = `|${endCalculation.toString()[i + endCalculation.toString().length - (firstNum.toString().length + secondNum.toString().length)]}` : currentLine = '| ';
+
         for(let j=0; j < firstNum.toString().length; j++){
             currentLine +=`|/ ${storedValues[i][j].toString()[1]}`;
         }
@@ -115,17 +47,18 @@ function BigMultiplication(firstNum: number, secondNum: number){
     }
     tableMap.push('| +' + '---+'.repeat(firstNum.toString().length) + ' |');
     currentLine = '|';
-    endCalcLengthCheck++;
-    for(endCalcLengthCheck; endCalcLengthCheck <endCalculation.toString().length;endCalcLengthCheck++){
-        currentLine += endCalcLengthCheck === (endCalculation.toString().length-1) ? `/ ${endCalculation.toString()[endCalcLengthCheck]}` : `/ ${endCalculation.toString()[endCalcLengthCheck]} `;
+    for(let i=endCalculation.toString().length-firstNum.toString().length; i <endCalculation.toString().length; i++){
+        currentLine += i === (endCalculation.toString().length-1) ? `/ ${endCalculation.toString()[i]}` : `/ ${endCalculation.toString()[i]} `;
     }
     tableMap.push(currentLine + '    |');
+
     tableMap.push('+' + '-'.repeat(3 + firstNum.toString().length + (firstNum.toString().length *3)) + '+'); // +---~---+
-    tableMap.forEach((line) => {
-        console.log(line);
-    })
+
+    return tableMap.toString();
 }
-BigMultiplication(345,56);
+
+
+BigMultiplication(1272,1256);
 /*
 
 +---------------+ 17 karaktärer, 15 streck
