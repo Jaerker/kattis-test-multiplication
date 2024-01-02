@@ -1,9 +1,8 @@
-
 /*
 
-    Vad ska göras: 
+    Vad ska göras:
     - Mata in 2 tal som ska multipliceras
-    - Talen ska visualiseras som nedan: 
+    - Talen ska visualiseras som nedan:
 
     15 streck
     +---------------+
@@ -20,25 +19,25 @@
     |/ 3 / 2 / 0    |
     +---------------+
 
-    Hur varje rad ser ut är följande: 
+    Hur varje rad ser ut är följande:
 
-    - INLEDANDE OCH AVSLUTANDE: 
-        "+- ~ -+" där ~ är mängden tal i första numret = 3 + firstNum.toString().length + (firstNum.toString().length *3) 
+    - INLEDANDE OCH AVSLUTANDE:
+        "+- ~ -+" där ~ är mängden tal i första numret = 3 + firstNum.toString().length + (firstNum.toString().length *3)
     - WORD ONE RADEN:
         "|   {n}" och repetera "   {n}" tills sista siffran, sen avsluta med "   |"
     - SUB GRID START, SUB GRID GAP, SUB GRID END:
         "| " och sen "+---" per siffra i firstNum, avsluta med "+ |"
     - SUB GRID MITT-1:
-        "| |" följt av tiotals numret i firstNum[0] * secondNum[0], sen " /|" och sen loopa genom alla talen i firstNum på secondNum[0] 
+        "| |" följt av tiotals numret i firstNum[0] * secondNum[0], sen " /|" och sen loopa genom alla talen i firstNum på secondNum[0]
     - SUB GRID MITT-2:
-        "| |" följt av " / |" lika många gånger som firstNum.Length, avslutat med högsta talet i secondNum. 
+        "| |" följt av " / |" lika många gånger som firstNum.Length, avslutat med högsta talet i secondNum.
     
 
 //parseInt(num.toString()[INDEX])
 
 
     PSEUDOKOD:
-    SET VARIABLES: 
+    SET VARIABLES:
         hLine       =   "-"
         vLine       =   "|"
         dash        =   "/"
@@ -75,57 +74,49 @@
 
 
 */
-
-
-function BigMultiplication(firstNum: number, secondNum: number){
-
-    let endCalcLengthCheck = -1;
-    let tableMap = [];
-    let endCalculation = firstNum * secondNum;
-    let storedValues = [];
-    
-    for(let i=0; i < secondNum.toString().length; i++){
+function BigMultiplication(firstNum, secondNum) {
+    var endCalcLengthCheck = -1;
+    var tableMap = [];
+    var endCalculation = firstNum * secondNum;
+    var storedValues = [];
+    for (var i = 0; i < secondNum.toString().length; i++) {
         storedValues[i] = [];
-        for(let j=0; j < firstNum.toString().length; j++){
-            storedValues[i][j] = (parseInt(firstNum.toString()[j]) * parseInt(secondNum.toString()[i])).toString().length != 2 ? '0' + (parseInt(firstNum.toString()[j]) * parseInt(secondNum.toString()[i])).toString() : (parseInt(firstNum.toString()[j]) * parseInt(secondNum.toString()[i])).toString();
-        }   
+        for (var j = 0; j < firstNum.toString().length; j++) {
+            storedValues[i][j] = (parseInt(firstNum.toString()[j]) * parseInt(firstNum.toString()[j])).toString().length != 2 ? '0' + (parseInt(firstNum.toString()[j]) * parseInt(firstNum.toString()[j])).toString() : (parseInt(firstNum.toString()[j]) * parseInt(firstNum.toString()[j])).toString();
+        }
     }
-    tableMap.push('+' + '-'.repeat(3 + firstNum.toString().length + (firstNum.toString().length *3)) + '+'); // +---~---+
-    let currentLine = '';
-    for(let i=0; i < firstNum.toString().length; i++){
-        currentLine += `${firstNum.toString()[i]}   `;
+    tableMap.push('+' + '-'.repeat(3 + firstNum.toString().length + (firstNum.toString().length * 3)) + '+'); // +---~---+
+    var currentLine = '   ';
+    for (var i = 0; i < firstNum.toString().length; i++) {
+        currentLine += "".concat(firstNum.toString()[i], "   ");
     }
     tableMap.push('|   ' + currentLine + '|'); //  |   {} ~   |
-
-    for(let i=0;i < secondNum.toString().length; i++){
+    for (var i = 0; i < secondNum.toString().length; i++) {
         tableMap.push('| +' + '---+'.repeat(firstNum.toString().length) + ' |');
-        
-        i != 0 ? currentLine = '|/|' : currentLine = '| |';
-        for(let j=0; j < firstNum.toString().length; j++){
-            currentLine +=`${storedValues[i][j].toString()[0]} /|`;
+        i === 0 ? currentLine = '|/|' : currentLine = '| |';
+        for (var j = 0; j < firstNum.toString().length; j++) {
+            currentLine += "".concat(storedValues[j][i].toString()[0], " /|");
         }
         tableMap.push(currentLine + ' |');
-        tableMap.push('| |' + ' / |'.repeat(firstNum.toString().length) + secondNum.toString()[i] + '|');
+        tableMap.push('| |' + ' / |'.repeat(firstNum.toString().length) + secondNum[i] + '|');
         endCalcLengthCheck++;
-        currentLine = `|${endCalculation.toString()[endCalcLengthCheck]}`;
-        for(let j=0; j < firstNum.toString().length; j++){
-            currentLine +=`|/ ${storedValues[i][j].toString()[1]}`;
+        currentLine = "|".concat(endCalculation[endCalcLengthCheck], "|");
+        for (var j = 0; j < firstNum.toString().length; j++) {
+            currentLine += "/ ".concat(storedValues[j][i].toString()[1], "|");
         }
-        tableMap.push(currentLine +'| |');
+        tableMap.push(tableMap.push(currentLine + '|'));
     }
     tableMap.push('| +' + '---+'.repeat(firstNum.toString().length) + ' |');
     currentLine = '|';
-    endCalcLengthCheck++;
-    for(endCalcLengthCheck; endCalcLengthCheck <endCalculation.toString().length;endCalcLengthCheck++){
-        currentLine += endCalcLengthCheck === (endCalculation.toString().length-1) ? `/ ${endCalculation.toString()[endCalcLengthCheck]}` : `/ ${endCalculation.toString()[endCalcLengthCheck]} `;
+    for (var i = endCalcLengthCheck; i < endCalculation.toString().length; i++) {
+        currentLine += "/ ".concat(endCalculation.toString()[i], " ");
     }
-    tableMap.push(currentLine + '    |');
-    tableMap.push('+' + '-'.repeat(3 + firstNum.toString().length + (firstNum.toString().length *3)) + '+'); // +---~---+
-    tableMap.forEach((line) => {
+    tableMap.push(currentLine + '   |');
+    tableMap.push('+' + '-'.repeat(3 + firstNum.toString().length + (firstNum.toString().length * 3)) + '+'); // +---~---+
+    tableMap.forEach(function (line) {
         console.log(line);
-    })
+    });
 }
-BigMultiplication(345,56);
 /*
 
 +---------------+ 17 karaktärer, 15 streck
@@ -173,4 +164,4 @@ BigMultiplication(345,56);
 |/ 9 / 9 / 9 / 3    |
 +-------------------+
 
-*/
+*/ 
